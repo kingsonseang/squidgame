@@ -13,8 +13,8 @@ directionalLight.castShadow = true
 scene.add( directionalLight )
 directionalLight.position.set( 0, 1, 1 )
 
-camera.position.z = 5
-renderer.setClearColor( 0xB7C3F3, 1 )
+camera.position.z = 7
+renderer.setClearColor( 0x1F2F16, 1 )
 
 const loader = new THREE.GLTFLoader()
 let doll
@@ -38,7 +38,7 @@ const loseMusic = new Audio('./music/lose.mp3')
 loader.load( './model/scene.gltf', function ( gltf ){
     scene.add( gltf.scene )
     doll = gltf.scene
-    gltf.scene.position.set(0,-1, 0)
+    gltf.scene.position.set(-6, -2, 1)
     gltf.scene.scale.set(0.4, 0.4, 0.4)
     startBtn.innerText = "start"
 })
@@ -120,9 +120,13 @@ class Player {
             if(SAFE_PLAYERS == players.length){
                 text.innerText = "Everyone is safe!!!"
                 gameStat = "ended"
+                bgMusic.loop = false
+                bgMusic.pause()
+                newGame()
             }
             if(DEAD_PLAYERS + SAFE_PLAYERS == players.length){
                 gameStat = "ended"
+                newGame()
             }
         }
     }
@@ -138,8 +142,8 @@ async function delay(ms){
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-const player1 = new Player("Player 1", .25, .3, 0xD1FFC6)
-const player2 = new Player("Player 2", .25, -.3, 0xFFCFD2)
+const player1 = new Player("Player 1", .25, .3, 0x395B50)
+const player2 = new Player("Player 2", .25, -.3, 0x5A7684)  
 
 const players = [
     {
@@ -154,16 +158,21 @@ const players = [
     }
 ]
 
-const TIME_LIMIT = 15
+const TIME_LIMIT = 40
 async function init(){
-    await delay(500)
-    text.innerText = "Starting in 3"
-    await delay(500)
-    text.innerText = "Starting in 2"
-    await delay(500)
-    text.innerText = "Starting in 1"
+    await delay(1000)
+    text.innerText = "The Game will begin Shortly"
+    await delay(1000)
+    text.innerText = "Get ready"
+    await delay(1000)
+    text.innerText = "Game starts in 3"
+    await delay(1000)
+    text.innerText = "2"
+    await delay(1000)
+    text.innerText = "1"
+    await delay(200)
     lookBackward()
-    await delay(500)
+    await delay(1000)
     text.innerText = "Gooo!!!"
     bgMusic.play()
     start()
@@ -180,18 +189,29 @@ function start(){
         if(gameStat != "ended"){
             text.innerText = "Time Out!!!"
             loseMusic.play()
+            bgMusic.loop = false
             gameStat = "ended"
+            newGame()
         }
     }, TIME_LIMIT * 1000)
     startDall()
 }
 
+function newGame() {
+    setTimeout(() => {
+        document.querySelector('.modal2').classList.remove('none')
+        document.querySelector('.start-btn').style.display = "none"
+        document.querySelector('.restart').style.display = "block"
+    }, 500
+    )
+}
+
 let dallFacingBack = true
 async function startDall(){
    lookBackward()
-   await delay((Math.random() * 1500) + 1500)
+   await delay(4800)
    lookForward()
-   await delay((Math.random() * 750) + 750)
+   await delay(3000)
    startDall()
 }
 
@@ -199,7 +219,7 @@ async function startDall(){
 startBtn.addEventListener('click', () => {
     if(startBtn.innerText == "START"){
         init()
-        document.querySelector('.modal').style.display = "none"
+        document.querySelector('.modal').classList.add('none')
     }
 })
 
